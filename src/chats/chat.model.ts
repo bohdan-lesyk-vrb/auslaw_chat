@@ -1,21 +1,33 @@
 import {
-  Table,
   Column,
   Model,
+  Table,
+  PrimaryKey,
+  AutoIncrement,
+  DataType,
   HasMany,
-  BelongsToMany,
 } from 'sequelize-typescript';
-import { User } from './../users/users.model';
-import { Message } from './../messages/messages.model';
+import { ChatUser } from 'src/messages/ChatUser.model';
 
 @Table
-export class Chat extends Model {
-  @Column
-  type: string;
+export class Chat extends Model<Chat> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id: number;
 
-  @HasMany(() => Message)
-  messages: Message[];
+  @Column(DataType.ARRAY(DataType.STRING))
+  users: string[];
 
-  @BelongsToMany(() => User, 'chat_participants', 'chatId', 'userId')
-  participants: User[];
+  @Column(DataType.DATE)
+  createdAt: Date;
+
+  @Column(DataType.DATE)
+  updatedAt: Date;
+
+  @Column(DataType.STRING)
+  chatName?: string;
+
+  @HasMany(() => ChatUser)
+  chatUsers?: ChatUser[];
 }

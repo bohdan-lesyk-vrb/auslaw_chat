@@ -2,49 +2,37 @@ import {
   Table,
   Column,
   Model,
-  HasMany,
   PrimaryKey,
+  AutoIncrement,
+  HasMany,
+  BelongsToMany,
   DataType,
-  Default,
 } from 'sequelize-typescript';
 import { Chat } from './../chats/chat.model';
+import { ChatUser } from 'src/messages/ChatUser.model';
 
 @Table
-export class User extends Model {
+export class User extends Model<User> {
   @PrimaryKey
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-    unique: true,
-  })
-  id: string;
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id: number;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
+  @Column(DataType.STRING)
   username: string;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-    unique: true,
-  })
-  email: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
+  @Column(DataType.STRING)
   password: string;
 
   @Column({
     type: DataType.STRING,
-    allowNull: true,
     defaultValue: 'offline',
   })
   status: string;
 
-  @HasMany(() => Chat)
+  @BelongsToMany(() => Chat, () => ChatUser)
   chats: Chat[];
+
+  @HasMany(() => ChatUser)
+  chatUsers: ChatUser[];
 }

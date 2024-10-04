@@ -1,30 +1,46 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Patch,
+  HttpCode,
+} from '@nestjs/common';
 import { ChatsService } from './chats.service';
-import { MessageDto } from './../messages/dto/create';
-import { Chat } from './chat.model';
-import { Message } from './../messages/messages.model';
+import { CreateChatDto } from './dto/create';
+import { UpdateChatDto } from './dto/update';
 
 @Controller('chats')
 export class ChatsController {
   constructor(private readonly chatsService: ChatsService) {}
 
   @Post()
-  async createChat(@Body('users') users: string[]): Promise<Chat> {
-    return this.chatsService.createChat(users);
+  async create(@Body() createChatDto: CreateChatDto) {
+    return this.chatsService.create(createChatDto);
   }
 
-  @Get('user/:userId')
-  async findUserChats(@Param('userId') userId: string): Promise<Chat[]> {
-    return this.chatsService.findUserChats(userId);
+  @Get()
+  async findAll() {
+    return this.chatsService.findAll();
   }
 
-  @Post('message')
-  async createMessage(@Body() messageDto: MessageDto): Promise<Message> {
-    return this.chatsService.createMessage(messageDto);
+  @Get(':id')
+  async findOne(@Param('id') id: number) {
+    return this.chatsService.findOne(id);
   }
 
-  @Get(':chatId/messages')
-  async findChatMessages(@Param('chatId') chatId: string): Promise<Message[]> {
-    return this.chatsService.findChatMessages(chatId);
+  @Patch(':id')
+  async update(@Param('id') id: number, @Body() updateChatDto: UpdateChatDto) {
+    return this.chatsService.update(id, updateChatDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  async remove(@Param('id') id: number) {
+    const chat = await this.chatsService.remove(id);
+
+    return chat;
   }
 }

@@ -1,20 +1,40 @@
-import { Table, Column, Model, ForeignKey } from 'sequelize-typescript';
-import { Chat } from './../chats/chat.model';
+import {
+  Column,
+  Model,
+  Table,
+  PrimaryKey,
+  AutoIncrement,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { User } from './../users/users.model';
+import { Chat } from 'src/chats/chat.model';
 
 @Table
-export class Message extends Model {
-  @Column
-  content: string;
-
-  @ForeignKey(() => User)
-  @Column
-  senderId: number;
+export class Message extends Model<Message> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id: number;
 
   @ForeignKey(() => Chat)
-  @Column
+  @Column(DataType.INTEGER)
   chatId: number;
 
-  @Column
-  isEdited: boolean;
+  @ForeignKey(() => User)
+  @Column(DataType.INTEGER)
+  senderId: number;
+
+  @Column(DataType.STRING)
+  content: string;
+
+  @Column(DataType.DATE)
+  createdAt: Date;
+
+  @BelongsTo(() => Chat)
+  chat: Chat;
+
+  @BelongsTo(() => User)
+  sender: User;
 }

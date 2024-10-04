@@ -1,48 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Chat } from './chat.model';
-import { Message } from './../messages/messages.model';
-import { MessageDto } from './../messages/dto/create';
-import { Op } from 'sequelize';
+import { CreateChatDto } from './dto/create';
+import { UpdateChatDto } from './dto/update';
 
 @Injectable()
 export class ChatsService {
   constructor(
     @InjectModel(Chat)
     private chatModel: typeof Chat,
-    @InjectModel(Message)
-    private messageModel: typeof Message,
   ) {}
 
-  // Створюємо новий чат
-  async createChat(users: string[]): Promise<Chat> {
-    const chat = await this.chatModel.create({ users });
+  async create(createChatDto: CreateChatDto): Promise<Chat> {
+    return this.chatModel.create(createChatDto);
+  }
+
+  async findAll(): Promise<Chat[]> {
+    return this.chatModel.findAll();
+  }
+
+  async findOne(id: number): Promise<Chat> {
+    const chat = await this.chatModel.findByPk(id);
+
+    if (!chat) throw new NotFoundException('Chat not found');
+
     return chat;
   }
 
-  // Отримуємо всі чати користувача
-  async findUserChats(userId: string): Promise<Chat[]> {
-    return this.chatModel.findAll({
-      where: { users: { [Op.contains]: [userId] } }, // Умова для користувача
-      include: [Message],
-    });
+  async update(id: number, updateChatDto: UpdateChatDto): Promise<Chat> {
+    const chat = await this.findOne(id);
+
+    return chat.update(updateChatDto);
   }
 
-  // Створюємо нове повідомлення
-  async createMessage(messageDto: MessageDto): Promise<Message> {
-    const message = await this.messageModel.create({
-      chatId: messageDto.chatId,
-      senderId: messageDto.senderId,
-      content: messageDto.content,
-    });
-    return message;
-  }
+  async remove(id: number): Promise<Chat> {
+    const chat = await this.findOne(id);
+    await chat.destroy();
 
-  // Отримуємо всі повідомлення чату
-  async findChatMessages(chatId: string): Promise<Message[]> {
-    return this.messageModel.findAll({
-      where: { chatId },
-      order: [['createdAt', 'ASC']], // Сортування повідомлень за датою
-    });
+    return chat;
   }
 }
