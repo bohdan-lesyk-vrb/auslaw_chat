@@ -11,8 +11,12 @@ export class MessagesService {
     private messageModel: typeof Message,
   ) {}
 
-  async create(createMessageDto: CreateMessageDto): Promise<Message> {
-    return this.messageModel.create(createMessageDto);
+  async create(messageData: {
+    chatId: number;
+    senderId: number;
+    content: string;
+  }) {
+    return this.messageModel.create(messageData);
   }
 
   async findAll(): Promise<Message[]> {
