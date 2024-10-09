@@ -31,6 +31,14 @@ export class MessagesService {
     return message;
   }
 
+  async findAllByChatId(chatId: number): Promise<Message[]> {
+    return this.messageModel.findAll({
+      where: {
+        chatId: chatId,
+      },
+    });
+  }
+
   async update(
     id: number,
     updateMessageDto: UpdateMessageDto,

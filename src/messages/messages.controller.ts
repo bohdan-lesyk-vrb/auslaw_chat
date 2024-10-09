@@ -30,6 +30,11 @@ export class MessagesController {
     return await this.messagesService.findOne(id);
   }
 
+  @Get('chat/:chatId')
+  async findAllByChatId(@Param('chatId') chatId: number) {
+    return this.messagesService.findAllByChatId(chatId);
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: number,
