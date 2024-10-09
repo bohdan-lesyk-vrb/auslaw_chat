@@ -34,7 +34,7 @@ export class AuthService {
   async login(
     username: string,
     password: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ access_token: string; user: User }> {
     const user = await this.usersService.findByUsername(username);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -49,6 +49,7 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
+      user,
     };
   }
 }
