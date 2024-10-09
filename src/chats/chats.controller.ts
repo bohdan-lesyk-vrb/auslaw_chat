@@ -31,6 +31,11 @@ export class ChatsController {
     return this.chatsService.findOne(id);
   }
 
+  @Get('user/:userId')
+  async findAllByUserId(@Param('userId') userId: number) {
+    return this.chatsService.findAllByUserId(userId);
+  }
+
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateChatDto: UpdateChatDto) {
     return this.chatsService.update(id, updateChatDto);

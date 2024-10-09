@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Chat } from './chat.model';
 import { CreateChatDto } from './dto/create';
 import { UpdateChatDto } from './dto/update';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ChatsService {
@@ -25,6 +26,16 @@ export class ChatsService {
     if (!chat) throw new NotFoundException('Chat not found');
 
     return chat;
+  }
+
+  async findAllByUserId(userId: number): Promise<Chat[]> {
+    return this.chatModel.findAll({
+      where: {
+        users: {
+          [Op.contains]: [userId],
+        },
+      },
+    });
   }
 
   async update(id: number, updateChatDto: UpdateChatDto): Promise<Chat> {
