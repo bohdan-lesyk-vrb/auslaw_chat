@@ -8,6 +8,7 @@ import { ChatUser } from './messages/ChatUser.model';
 import { User } from './users/users.model';
 import { Chat } from './chats/chat.model';
 import { MessagesModule } from './messages/messages.module';
+import { Message } from './messages/messages.model';
 
 @Module({
   imports: [
@@ -24,8 +25,15 @@ import { MessagesModule } from './messages/messages.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME'),
-        autoLoadModels: process.env.NODE_ENV !== 'production',
-        synchronize: process.env.NODE_ENV !== 'production',
+        models: [Chat, User, Message, ChatUser],
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
+        autoLoadModels: true,
+        synchronize: true,
       }),
     }),
     SequelizeModule.forFeature([ChatUser, User, Chat]),
