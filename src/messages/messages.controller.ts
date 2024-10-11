@@ -46,7 +46,6 @@ export class MessagesController {
   @Delete(':id')
   async remove(@Param('id') id: number) {
     const deletedMessage = await this.messagesService.remove(id);
-
     return deletedMessage;
   }
 }

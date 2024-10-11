@@ -26,12 +26,12 @@ import { Message } from './messages/messages.model';
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME'),
         models: [Chat, User, Message, ChatUser],
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-        },
+        // dialectOptions: {
+        //   ssl: {
+        //     require: true,
+        //     rejectUnauthorized: false,
+        //   },
+        // },
         autoLoadModels: true,
         synchronize: true,
       }),

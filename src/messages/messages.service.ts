@@ -3,6 +3,7 @@ import { CreateMessageDto } from './dto/create';
 import { UpdateMessageDto } from './dto/update';
 import { Message } from './messages.model';
 import { InjectModel } from '@nestjs/sequelize';
+import { User } from 'src/users/users.model';
 
 @Injectable()
 export class MessagesService {
@@ -36,6 +37,13 @@ export class MessagesService {
       where: {
         chatId: chatId,
       },
+      include: [
+        {
+          model: User,
+          attributes: ['username'],
+        },
+      ],
+      order: [['createdAt', 'ASC']],
     });
   }
 
@@ -45,9 +53,11 @@ export class MessagesService {
   ): Promise<Message> {
     const message = await this.findOne(id);
 
-    return message.update(updateMessageDto, {
+    await message.update(updateMessageDto, {
       fields: ['content', 'senderId', 'chatId'],
     });
+
+    return message.reload();
   }
 
   async remove(id: number): Promise<Message> {
