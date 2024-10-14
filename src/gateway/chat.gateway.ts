@@ -40,8 +40,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const { chatId, userId, text } = payload;
 
-    console.log(chatId, userId, text);
-
     const message = await this.messagesService.create({
       chatId: chatId,
       senderId: userId,
